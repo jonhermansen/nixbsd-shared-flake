@@ -23,7 +23,7 @@
 #    };
   };
 
-  outputs = { nixpkgs, home-manager, stylix, nur, microvm, nixos-qubes, ... }: {
+  outputs = { nixpkgs, home-manager, stylix, nur, microvm, ... }: {
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -39,7 +39,7 @@
           environment.systemPackages = with pkgs.nur.repos.jonhermansen; [
             #davinci-resolve-studio
             flashrom-dasharo
-            microvm.packages.${pkgs.system}.microvm
+            microvm.packages.${pkgs.stdenv.hostPlatform.system}.microvm
             spotx
           ];
         })
