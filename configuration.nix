@@ -5,10 +5,14 @@
     ./hardware-configuration.nix
   ];
 
-  boot.loader.limine.efiInstallAsRemovable = true;
-  boot.loader.limine.enable = true;
-  boot.loader.limine.enableEditor = true;
-  #boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 5;
+  boot.loader.systemd-boot.edk2-uefi-shell.enable = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.extraEntries."freebsd.conf" = ''
+    title FreeBSD
+    efi /EFI/BOOT/BOOTX64.EFI.BAK
+    sort-key z_freebsd
+  '';
   environment.etc."sway/config.d/zzz-custom.conf".text = ''
     set $mod Mod1
   '';
@@ -19,22 +23,29 @@
     git
     kitty
     lutris
+    mesa-demos
     nix-output-monitor
     open-vm-tools
     pciutils
     usbutils
     wineWowPackages.waylandFull
+    #wine64
+    #wineWowPackages.stable
+    winetricks
   ];
-  environment.variables.WLR_NO_HARDWARE_CURSORS = "1";
+  #environment.variables.WLR_NO_HARDWARE_CURSORS = "1";
   hardware.graphics.enable = true;
   networking.hostId = "12345678";
   networking.networkmanager.enable = true;
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
   nixpkgs.config.allowUnfree = true;
   programs.sway.enable = true;
+  programs.sway.xwayland.enable = true;
   security.sudo.wheelNeedsPassword = false;
   #services.desktopManager.gnome.enable = true;
+  #services.desktopManager.plasma6.enable = true;
   #services.displayManager.gdm.enable = true;
+  #services.displayManager.sddm.enable = true;
   services.getty.autologinUser = "user";
   #services.greetd.enable = true;
   #services.greetd.package = pkgs.tuigreet;
@@ -54,4 +65,3 @@
   virtualisation.vmware.guest.enable = true;
   #virtualisation.vmware.host.enable = true;
 }
-
