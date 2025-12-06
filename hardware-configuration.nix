@@ -38,6 +38,11 @@
       fsType = "zfs";
     };
 
+  fileSystems."/var/lib/libvirt" =
+    { device = "zpool/var/lib/libvirt";
+      fsType = "zfs";
+    };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

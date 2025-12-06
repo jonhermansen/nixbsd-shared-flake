@@ -5,14 +5,25 @@
     ./hardware-configuration.nix
   ];
 
-  boot.loader.systemd-boot.configurationLimit = 5;
-  boot.loader.systemd-boot.edk2-uefi-shell.enable = true;
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.extraEntries."freebsd.conf" = ''
-    title FreeBSD
-    efi /EFI/BOOT/BOOTX64.EFI.BAK
-    sort-key z_freebsd
+  #boot.loader.systemd-boot.configurationLimit = 5;
+  #boot.loader.systemd-boot.edk2-uefi-shell.enable = true;
+  #boot.loader.systemd-boot.enable = true;
+  #boot.loader.systemd-boot.extraEntries."freebsd.conf" = ''
+  #  title FreeBSD
+  #  efi /EFI/BOOT/BOOTX64.EFI.BAK
+  #  sort-key z_freebsd
+  #'';
+  #boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub.devices = [ "nodev" ];
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiInstallAsRemovable = true;
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.extraEntries = ''
+    menuentry "FreeBSD" {
+      chainloader /efi/boot/bootx64.efi.bak
+    }
   '';
+
   environment.etc."sway/config.d/zzz-custom.conf".text = ''
     set $mod Mod1
   '';
@@ -25,6 +36,7 @@
     lutris
     mesa-demos
     nix-output-monitor
+    nixfmt-rfc-style
     open-vm-tools
     pciutils
     usbutils
@@ -39,8 +51,12 @@
   networking.networkmanager.enable = true;
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
   nixpkgs.config.allowUnfree = true;
+  programs.firefox.enable = true;
+  programs.firefox.package = pkgs.librewolf;
+  programs.fish.enable = true;
   programs.sway.enable = true;
   programs.sway.xwayland.enable = true;
+  programs.virt-manager.enable = true;
   security.sudo.wheelNeedsPassword = false;
   #services.desktopManager.gnome.enable = true;
   #services.desktopManager.plasma6.enable = true;
@@ -49,6 +65,10 @@
   services.getty.autologinUser = "user";
   #services.greetd.enable = true;
   #services.greetd.package = pkgs.tuigreet;
+  #services.nfs.server.enable = true;
+  #services.nfs.server.exports = ''
+  #'';
+  services.sshd.enable = true;
   services.xserver.desktopManager.mate.enable = true;
   services.xserver.desktopManager.xfce.enable = true;
   #services.xserver.displayManager.lightdm.enable = true;
@@ -59,9 +79,46 @@
   time.timeZone = "US/Eastern";
   users.users.user = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "libvirtd" "wheel" ];
     password = "password";
+    shell = pkgs.fish;
   };
   virtualisation.vmware.guest.enable = true;
   #virtualisation.vmware.host.enable = true;
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      package = pkgs.qemu_kvm;
+      runAsRoot = true;
+      swtpm.enable = true;
+    };
+  };
+
+  fileSystems."/export/home" = {
+    device = "/home";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/export/nix/store" =
+    { device = "zpool/nix/store";
+      fsType = "zfs";
+    };
+
+  fileSystems."/export/nix/var" = {
+    device = "/nix/var";
+    options = [ "bind" ];
+  };
+
+services.nfs.server = {
+  enable = true;
+  exports = ''
+    /export                   *(fsid=0,rw,no_subtree_check,async,no_root_squash)
+    /export/home              *(rw,nohide,no_subtree_check,async,no_root_squash)
+    /export/nix/store         *(rw,nohide,no_subtree_check,sync,no_root_squash)
+    /export/nix/var           *(rw,nohide,no_subtree_check,async,no_root_squash)
+  '';
+};
+
+  networking.firewall.allowedTCPPorts = [ 2049 ];
+  networking.firewall.enable = false;
 }
