@@ -33,17 +33,17 @@
     foot
     git
     kitty
-    lutris
+    #lutris
     mesa-demos
     nix-output-monitor
     nixfmt-rfc-style
     open-vm-tools
     pciutils
     usbutils
-    wineWowPackages.waylandFull
+    #wineWowPackages.waylandFull
     #wine64
     #wineWowPackages.stable
-    winetricks
+    #winetricks
   ];
   #environment.variables.WLR_NO_HARDWARE_CURSORS = "1";
   hardware.graphics.enable = true;
@@ -51,8 +51,8 @@
   networking.networkmanager.enable = true;
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
   nixpkgs.config.allowUnfree = true;
-  programs.firefox.enable = true;
-  programs.firefox.package = pkgs.librewolf;
+  #programs.firefox.enable = true;
+  #programs.firefox.package = pkgs.librewolf;
   programs.fish.enable = true;
   programs.sway.enable = true;
   programs.sway.xwayland.enable = true;
@@ -84,41 +84,4 @@
     shell = pkgs.fish;
   };
   virtualisation.vmware.guest.enable = true;
-  #virtualisation.vmware.host.enable = true;
-  virtualisation.libvirtd = {
-    enable = true;
-    qemu = {
-      package = pkgs.qemu_kvm;
-      runAsRoot = true;
-      swtpm.enable = true;
-    };
-  };
-
-  fileSystems."/export/home" = {
-    device = "/home";
-    options = [ "bind" ];
-  };
-
-  fileSystems."/export/nix/store" =
-    { device = "zpool/nix/store";
-      fsType = "zfs";
-    };
-
-  fileSystems."/export/nix/var" = {
-    device = "/nix/var";
-    options = [ "bind" ];
-  };
-
-services.nfs.server = {
-  enable = true;
-  exports = ''
-    /export                   *(fsid=0,rw,no_subtree_check,async,no_root_squash)
-    /export/home              *(rw,nohide,no_subtree_check,async,no_root_squash)
-    /export/nix/store         *(rw,nohide,no_subtree_check,sync,no_root_squash)
-    /export/nix/var           *(rw,nohide,no_subtree_check,async,no_root_squash)
-  '';
-};
-
-  networking.firewall.allowedTCPPorts = [ 2049 ];
-  networking.firewall.enable = false;
 }

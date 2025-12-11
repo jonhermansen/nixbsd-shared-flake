@@ -38,6 +38,11 @@
       fsType = "zfs";
     };
 
+  fileSystems."/nix/var/nix" =
+    { device = "zpool/nix/var/nix";
+      fsType = "zfs";
+    };
+
   fileSystems."/var/lib/libvirt" =
     { device = "zpool/var/lib/libvirt";
       fsType = "zfs";
