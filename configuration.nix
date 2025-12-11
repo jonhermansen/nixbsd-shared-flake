@@ -13,6 +13,8 @@ let
     echo "Installing NixBSD bootloader..."
     mkdir -p /boot/efi/nixbsd
     cp -Lrf ${nixbsdBootloader}/* /boot/efi/nixbsd/
+    cp -Lrf /boot/efi/nixbsd/boot/* /boot/
+    cp -Lrf /boot/efi/nixbsd/boot/* /boot/efi/
     echo "NixBSD bootloader installed to /boot/efi/nixbsd/"
   '';
 in
