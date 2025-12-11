@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -49,7 +54,10 @@
   hardware.graphics.enable = true;
   networking.hostId = "12345678";
   networking.networkmanager.enable = true;
-  nix.settings.experimental-features = [ "flakes" "nix-command" ];
+  nix.settings.experimental-features = [
+    "flakes"
+    "nix-command"
+  ];
   nixpkgs.config.allowUnfree = true;
   programs.firefox.enable = true;
   programs.firefox.package = pkgs.librewolf;
@@ -79,10 +87,20 @@
   time.timeZone = "US/Eastern";
   users.users.user = {
     isNormalUser = true;
-    extraGroups = [ "libvirtd" "wheel" ];
+    extraGroups = [
+      "libvirtd"
+      "wheel"
+    ];
     password = "password";
     shell = pkgs.fish;
   };
   virtualisation.vmware.guest.enable = true;
-
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      package = pkgs.qemu_kvm;
+      runAsRoot = true;
+      swtpm.enable = true;
+    };
+  };
 }
