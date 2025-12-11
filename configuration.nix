@@ -52,6 +52,14 @@
   ];
   #environment.variables.WLR_NO_HARDWARE_CURSORS = "1";
   hardware.graphics.enable = true;
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = false;
+    powerManagement.finegrained = false;
+    open = false;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
   networking.hostId = "12345678";
   networking.networkmanager.enable = true;
   nix.settings.experimental-features = [
