@@ -31,6 +31,7 @@ It may not look like much, but it took me a lot of trial and error to get here!
 # Planned TODO
 
 - Upload artifacts to Cachix
-- Consolidate all NixBSD configuration into this repository
+- Consolidate all NixBSD configuration into this repository (but still consume upstream NixBSD as a flake)
 - Produce a NixBSD install ISO
-- 
+- Upstream fix for infinite recursion
+- Investigate failing tests which I disabled to get to this point
