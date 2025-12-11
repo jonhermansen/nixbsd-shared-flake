@@ -11,11 +11,9 @@ let
   installNixBSD = lib.optionalString (nixbsdBootloader != null) ''
     # Copy NixBSD bootloader to ESP
     echo "Installing NixBSD bootloader..."
-    mkdir -p /boot/efi/nixbsd
-    cp -Lrf ${nixbsdBootloader}/* /boot/efi/nixbsd/
-    cp -Lrf /boot/efi/nixbsd/boot/* /boot/
-    cp -Lrf /boot/efi/nixbsd/boot/* /boot/efi/
-    echo "NixBSD bootloader installed to /boot/efi/nixbsd/"
+    cp -Lrf ${nixbsdBootloader}/boot/* /boot/
+    cp -Lrf ${nixbsdBootloader}/* /boot/
+    echo "NixBSD bootloader installed to /boot/"
   '';
 in
 {
@@ -25,7 +23,8 @@ in
 
   boot.loader.grub.devices = [ "nodev" ];
   boot.loader.grub.enable = true;
-  boot.loader.grub.efiInstallAsRemovable = true;
+  #boot.loader.grub.efiInstallAsRemovable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub.efiSupport = true;
   
   # Add activation script to copy NixBSD bootloader
@@ -36,7 +35,7 @@ in
   
   boot.loader.grub.extraEntries = ''
     menuentry "NixBSD (FreeBSD)" {
-      chainloader /efi/nixbsd/efi/boot/bootx64.efi
+      chainloader /efi/boot/bootx64.efi
     }
     menuentry "FreeBSD (existing)" {
       chainloader /efi/boot/bootx64.efi.bak
@@ -50,6 +49,7 @@ in
   environment.systemPackages = with pkgs; [
     efibootmgr
     emacs
+    file
     foot
     git
     kitty
