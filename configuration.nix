@@ -51,8 +51,8 @@
   networking.networkmanager.enable = true;
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
   nixpkgs.config.allowUnfree = true;
-  #programs.firefox.enable = true;
-  #programs.firefox.package = pkgs.librewolf;
+  programs.firefox.enable = true;
+  programs.firefox.package = pkgs.librewolf;
   programs.fish.enable = true;
   programs.sway.enable = true;
   programs.sway.xwayland.enable = true;
@@ -84,4 +84,5 @@
     shell = pkgs.fish;
   };
   virtualisation.vmware.guest.enable = true;
+
 }
