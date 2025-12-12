@@ -16,7 +16,6 @@ It may not look like much, but it took me a lot of trial and error to get here!
 # Problems
 
 - Many corners were cut
-- FreeBSD barely boots (single-user mode shell access)
 - System can't be compiled natively, only cross-compiled from Linux
 - NixBSD configuration lives in a separate repo
 
