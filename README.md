@@ -1,6 +1,6 @@
 # Demo
 
-![nixos-nixbsd](https://github.com/user-attachments/assets/a2a635e9-9426-4c65-8bab-a565dd14dfd7)
+![nixos-nixbsd2](https://github.com/user-attachments/assets/1e7cc26c-41ce-4949-a853-2d1e6e064fa1)
 
 # What is this?
 
