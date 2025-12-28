@@ -58,7 +58,10 @@ in
     nixfmt-rfc-style
     open-vm-tools
     pciutils
+    ripgrep
+    sqlite
     usbutils
+    xorg.xinit
   ];
   
   hardware.graphics.enable = true;
@@ -75,6 +78,7 @@ in
   networking.networkmanager.enable = true;
   
   nix.settings.experimental-features = [
+    "ca-derivations"
     "flakes"
     "nix-command"
   ];

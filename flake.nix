@@ -10,7 +10,7 @@
     
     # Build a standalone derivation with just the bootloader files
     # This avoids infinite recursion by not referencing the full config
-    nixbsdBootloader = nixbsd.packages.${system}.base.config.boot.loader.espContents;
+    nixbsdBootloader = nixbsd.packages.${system}.extra.config.boot.loader.espContents;
   in
   {
     # Expose the bootloader as a separate package for easy building
