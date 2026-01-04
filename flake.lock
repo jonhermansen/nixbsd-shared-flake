@@ -143,11 +143,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1765677814,
-        "narHash": "sha256-UQ2RUNPuHrXECQlZikxpKSLMmaE3I05v86vWARUtGiw=",
+        "lastModified": 1767033129,
+        "narHash": "sha256-4Cc3tNyAQnHxfyn/moOGE/a6cMfwI2y7BfNQOwkpVks=",
         "owner": "jonhermansen",
         "repo": "nixbsd",
-        "rev": "dd982a5bd8256b900f228828a7e111a999cd1fce",
+        "rev": "b22400eeafa7ada08de14d34481cc18d6622a4ad",
         "type": "github"
       },
       "original": {

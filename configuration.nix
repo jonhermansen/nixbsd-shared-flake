@@ -13,6 +13,9 @@ let
     echo "Installing NixBSD bootloader..."
     cp -Lrf ${nixbsdBootloader}/boot/* /boot/
     cp -Lrf ${nixbsdBootloader}/* /boot/
+    #cp /boot/efi/boot/bootx64.efi /boot/efi/boot/bootx64.efi.orig
+    cp ${nixbsdBootloader}/efi/boot/bootx64.efi /boot/efi/boot/bootx64.efi.bak2
+    cp /boot/efi/boot/BOOTX64.EFI.limine-bak /boot/efi/boot/BOOTX64.EFI
     echo "NixBSD bootloader installed to /boot/"
   '';
 in
@@ -21,11 +24,25 @@ in
     ./hardware-configuration.nix
   ];
 
-  boot.loader.grub.devices = [ "nodev" ];
-  boot.loader.grub.enable = true;
+  #boot.loader.grub.devices = [ "nodev" ];
+  #boot.loader.grub.enable = true;
   #boot.loader.grub.efiInstallAsRemovable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub.efiSupport = true;
+  #boot.loader.efi.canTouchEfiVariables = true;
+  #boot.loader.grub.efiSupport = true;
+  #boot.loader.systemd-boot.enable = true;
+  #boot.loader.systemd-boot.extraEntries = {
+  #  "nixbsd.conf" = ''
+  #    title NixBSD
+  #    efi /efi/boot/bootx64.efi.bak2
+  #    sort-key z_nixbsd
+  #  '';
+  #};
+  boot.loader.limine.enable = true;
+  boot.loader.limine.extraEntries = ''
+    /nixbsd
+      protocol: efi_chainload
+      path: boot():///efi/boot/bootx64.efi.bak2
+  '';
   
   # Add activation script to copy NixBSD bootloader
   system.activationScripts.installNixBSD = lib.mkIf (nixbsdBootloader != null) {
@@ -33,14 +50,14 @@ in
     deps = [];
   };
   
-  boot.loader.grub.extraEntries = ''
-    menuentry "NixBSD (FreeBSD)" {
-      chainloader /efi/boot/bootx64.efi
-    }
-    menuentry "FreeBSD (existing)" {
-      chainloader /efi/boot/bootx64.efi.bak
-    }
-  '';
+#  boot.loader.grub.extraEntries = ''
+#    menuentry "NixBSD"" {
+#      chainloader /efi/boot/bootx64.efi.bak2
+#    }
+#    menuentry "FreeBSD (existing)" {
+#      chainloader /efi/boot/bootx64.efi.bak
+#    }
+#  '';
 
   environment.etc."sway/config.d/zzz-custom.conf".text = ''
     set $mod Mod1
@@ -117,12 +134,12 @@ in
   };
   
   virtualisation.vmware.guest.enable = true;
-  virtualisation.libvirtd = {
-    enable = true;
-    qemu = {
-      package = pkgs.qemu_kvm;
-      runAsRoot = true;
-      swtpm.enable = true;
-    };
-  };
+  #virtualisation.libvirtd = {
+  #  enable = true;
+  #  qemu = {
+  #    package = pkgs.qemu_kvm;
+  #    runAsRoot = true;
+  #    swtpm.enable = true;
+  #  };
+  #};
 }
