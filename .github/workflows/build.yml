@@ -15,7 +15,6 @@ jobs:
         with:
           name: jonhermansen
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          pullNames: jonhermansen
       # Build nixosSystem (includes nixbsdSystem) and push all deps to cachix
       - run: cachix watch-exec jonhermansen -- nix build -L .#nixosSystem --no-link
       # Build final image
