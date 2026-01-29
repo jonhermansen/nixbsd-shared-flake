@@ -21,18 +21,27 @@
         boot.initmd.pivotFileSystems = [ "/" "/nix" ];
         
         users.users.root.initialPassword = "toor";
+        users.users.nixos = {
+          isNormalUser = true;
+          extraGroups = [ "wheel" ];
+          initialPassword = "nixos";
+        };
+        security.sudo.wheelNeedsPassword = false;
         
         fileSystems."/" = { 
           device = "tank/rootfs"; 
-          fsType = "zfs"; 
+          fsType = "zfs";
+          #options = [ "ro" ];
         };
         fileSystems."/nix" = { 
           device = "tank/nix"; 
           fsType = "zfs"; 
+          #options = [ "ro" ];
         };
         fileSystems."/boot" = { 
           device = "/dev/msdosfs/ESP"; 
           fsType = "msdosfs"; 
+          #options = [ "ro" ];
         };
       }];
     };
@@ -57,10 +66,12 @@
           fileSystems."/nix" = { 
             device = "tank/nix"; 
             fsType = "zfs"; 
+            #options = [ "ro" ];
           };
           fileSystems."/boot" = { 
             device = "/dev/disk/by-label/ESP";
             fsType = "vfat"; 
+            #options = [ "ro" ];
           };
           
           boot.loader.grub = {
@@ -97,7 +108,7 @@
       }).config;
       
       memSize = 4096;
-      rootSize = 8192;
+      rootSize = 4096;
       rootPoolName = "tank";
       rootPoolProperties = { cachefile = "none"; autoexpand = "on"; };
       datasets."tank/nix".mount = "/nix";
