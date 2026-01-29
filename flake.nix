@@ -14,16 +14,17 @@
         
         boot.supportedFilesystems = [ "zfs" ];
         boot.kernelModules = [ "zfs" ];  # Load ZFS module early
+        boot.zfs.forceImportAll = true;  # JAH TODO: this is a hack
         boot.loader.stand-freebsd.enable = true;
         boot.copyKernelToBoot = true;
         boot.initmd.enable = true;
-        boot.initmd.pivotFileSystems = [ "/nix" ];
+        boot.initmd.pivotFileSystems = [ "/" "/nix" ];
         
         users.users.root.initialPassword = "toor";
         
         fileSystems."/" = { 
-          fsType = "tmpfs"; 
-          device = "tmpfs"; 
+          device = "tank/rootfs"; 
+          fsType = "zfs"; 
         };
         fileSystems."/nix" = { 
           device = "tank/nix"; 
@@ -68,6 +69,7 @@
             efiSupport = true;
             efiInstallAsRemovable = true;
             zfsSupport = true;
+            default = 1;
             extraEntries = ''
               menuentry 'NixBSD' {
                 insmod part_gpt
