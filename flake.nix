@@ -26,17 +26,15 @@
         boot.copyKernelToBoot = true;
         boot.initmd.enable = true;
         boot.initmd.pivotFileSystems = [ "/" "/nix" ];
-        
-        environment.systemPackages = [ nixpkgs.legacyPackages.${system}.fastfetch ];
-        
-        programs.fish.enable = true;
+
+        documentation.enable = false;
+        documentation.man.enable = false;
         
         users.users.root.initialPassword = "toor";
         users.users.nixos = {
           isNormalUser = true;
           extraGroups = [ "wheel" ];
           initialPassword = "nixos";
-          shell = "/run/current-system/sw/bin/fish";
         };
         security.sudo.wheelNeedsPassword = false;
         
@@ -81,10 +79,9 @@
             boot.zfs.forceImportAll = true;
             boot.initrd.supportedFilesystems = [ "zfs" ];
             
-            environment.systemPackages = [ nixpkgs.legacyPackages.${system}.fastfetch ];
-            
-            programs.fish.enable = true;
-            
+            documentation.enable = false;
+            documentation.man.enable = false;
+        
             fileSystems."/" = { 
               fsType = "tmpfs"; 
               device = "tmpfs"; 
@@ -123,7 +120,6 @@
               isNormalUser = true;
               extraGroups = [ "wheel" ];
               initialPassword = "nixos";
-              shell = nixpkgs.legacyPackages.${system}.fish;
             };
             security.sudo.wheelNeedsPassword = false;
             
@@ -153,9 +149,8 @@
             boot.zfs.forceImportAll = true;
             boot.initrd.supportedFilesystems = [ "zfs" ];
             
-            environment.systemPackages = [ nixpkgs.legacyPackages.${system}.fastfetch ];
-            
-            programs.fish.enable = true;
+            documentation.enable = false;
+            documentation.man.enable = false;
             
             fileSystems."/" = { 
               fsType = "tmpfs"; 
@@ -195,7 +190,6 @@
               isNormalUser = true;
               extraGroups = [ "wheel" ];
               initialPassword = "nixos";
-              shell = nixpkgs.legacyPackages.${system}.fish;
             };
             security.sudo.wheelNeedsPassword = false;
             
@@ -205,11 +199,20 @@
             ];
           }];
         }).config;
-        
+
+        bootSize = 320;   # ~335 MB actual
+        rootSize = 1600;
         memSize = 2048;
-        rootSize = 2048;
+
         rootPoolName = "tank";
         rootPoolProperties = { cachefile = "none"; autoexpand = "off"; };
+        rootPoolFilesystemProperties = {
+          acltype = "posixacl";
+          atime = "off";
+          compression = "zstd-9";  # This replaces the default "on"
+          mountpoint = "legacy";
+          xattr = "sa";
+        };
         datasets."tank/nix".mount = "/nix";
         includeChannel = false;
         
