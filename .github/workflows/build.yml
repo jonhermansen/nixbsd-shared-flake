@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6.0.2
       - uses: cachix/install-nix-action@v31.9.0
@@ -13,4 +15,22 @@ jobs:
         with:
           name: jonhermansen
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      - run: cachix watch-exec jonhermansen -- nix build -L .#packages.x86_64-linux.zfsImage --no-link
+          pullNames: jonhermansen
+      # Build nixosSystem (includes nixbsdSystem) and push all deps to cachix
+      - run: cachix watch-exec jonhermansen -- nix build -L .#nixosSystem --no-link
+      # Build final image
+      - run: nix build -L .#zfsImage
+      # Push any remaining paths to cachix (just in case)
+      - run: nix path-info .#nixosSystem --recursive | cachix push jonhermansen
+      
+      # Create release with the disk image
+      - name: Create Release
+        uses: softprops/action-gh-release@v2.5.0
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Build ${{ github.run_number }}
+          files: result/nixos.root.img
+          body: |
+            Automated build from commit ${{ github.sha }}
+            Build number: ${{ github.run_number }}
