@@ -39,8 +39,8 @@ Dependencies are cached at [jonhermansen.cachix.org](https://jonhermansen.cachix
 
 ## Related Projects
 
-- [NixBSD upstream](https://github.com/jonhermansen/nixbsd)
-- [FreeBSD 15 patches](https://github.com/jonhermansen/nixpkgs/commits/beachepisode/)
+- [nixbsd fork](https://github.com/jonhermansen/nixbsd/tree/main)
+- [nixpkgs fork](https://github.com/jonhermansen/nixpkgs/tree/beachepisode/)
 
 ---
 
