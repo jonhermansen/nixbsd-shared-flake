@@ -2,7 +2,6 @@ name: build
 
 on:
   push:
-  pull_request:
 
 jobs:
   build:
@@ -14,7 +13,4 @@ jobs:
         with:
           name: jonhermansen
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      - run: nix build .#packages.x86_64-linux.zfsImage --no-link
-      - run: |
-          OUT=$(nix eval --raw .#packages.x86_64-linux.zfsImage)
-          nix path-info -r "$OUT" | grep -v "^$OUT$" | cachix push jonhermansen
+      - run: cachix watch-exec jonhermansen -- nix build -L .#packages.x86_64-linux.zfsImage --no-link
