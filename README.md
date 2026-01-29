@@ -1,36 +1,47 @@
-# Demo
+# NixOS + NixBSD Dual Boot
 
-![nixos-nixbsd2](https://github.com/user-attachments/assets/1e7cc26c-41ce-4949-a853-2d1e6e064fa1)
+![demo](demo.gif)
 
-# What is this?
+A reproducible dual-boot system combining NixOS and NixBSD on a single ZFS pool, with GRUB chainloading the FreeBSD bootloader.
 
-This is my attempt to get my system dual-booting with NixOS and NixBSD.
+## What's Inside
 
-It may not look like much, but it took me a lot of trial and error to get here!
+- **NixOS** for the Linux environment and GRUB bootloader
+- **NixBSD** (FreeBSD 15) cross-compiled from Linux
+- **Single flake** managing both systems
 
-# See also
+## Quick Start
 
-- https://github.com/jonhermansen/nixpkgs/commits/beachepisode/
-- https://github.com/jonhermansen/nixbsd
+Download the latest disk image from [Releases](https://github.com/jonhermansen/nixbsd-shared-flake/releases) and boot with:
+```bash
+# Using libvirt/virt-manager:
+# - Firmware: UEFI
+# - Disk bus: SATA
+# - Attach the .img file as a disk
 
-# Problems
+# Or with QEMU directly:
+qemu-system-x86_64 \
+  -enable-kvm \
+  -m 2048 \
+  -bios /usr/share/ovmf/OVMF.fd \
+  -drive file=nixos.root.img,format=raw
+```
 
-- Many corners were cut
-- System can't be compiled natively, only cross-compiled from Linux
-- NixBSD configuration lives in a separate repo
+Default credentials: `nixos` / `nixos` (or `root` / `toor`)
 
-# Achievements
+## Building Locally
+```bash
+nix build .#zfsImage
+# Result: ./result/nixos.root.img
+```
 
-- Upgraded to FreeBSD 15 last minute (ouch)
-- Sorted out why init was crashing (no serial console was attached)
-- Resolved ZFS mounting on boot ([libdevdctl still doesn't build](https://github.com/jonhermansen/nixpkgs/commit/7dbfd4741a6f86a422ca9fd72171003830299761) but is required by zfsd)
-- Idempotent bootloader installation (... and NixOS and NixBSD coexist peacefully)
-- Fully reproducible
+Dependencies are cached at [jonhermansen.cachix.org](https://jonhermansen.cachix.org).
 
-# Planned TODO
+## Related Projects
 
-- Upload artifacts to Cachix
-- Consolidate all NixBSD configuration into this repository (but still consume upstream NixBSD as a flake)
-- Produce a NixBSD install ISO
-- Upstream fix for infinite recursion
-- Investigate failing tests which I disabled to get to this point
+- [NixBSD upstream](https://github.com/jonhermansen/nixbsd)
+- [FreeBSD 15 patches](https://github.com/jonhermansen/nixpkgs/commits/beachepisode/)
+
+---
+
+*This is experimental software. NixBSD can only be cross-compiled from Linux at this time.*
