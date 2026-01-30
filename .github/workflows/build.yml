@@ -18,7 +18,7 @@ jobs:
       # Build nixosSystem (includes nixbsdSystem) and push all deps to cachix
       - run: cachix watch-exec jonhermansen -- nix build -L .#nixosSystem --no-link
       # Build final image
-      - run: nix build -L .#zfsImage
+      - run: cachix watch-exec jonhermansen -- nix build -L .#zfsImage
       # Push any remaining paths to cachix (just in case)
       - run: nix path-info .#nixosSystem --recursive | cachix push jonhermansen
       
